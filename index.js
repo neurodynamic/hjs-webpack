@@ -138,8 +138,6 @@ module.exports = function (opts) {
     // minify in production
     if (opts.minify) {
       config.plugins.push(
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.OccurenceOrderPlugin(true),
         new webpack.optimize.UglifyJsPlugin({
           compress: {
             warnings: false
@@ -148,15 +146,20 @@ module.exports = function (opts) {
             comments: false
           },
           sourceMap: false
-        }),
-        new ExtractTextPlugin(config.output.cssFilename, {
-          allChunks: true
-        }),
-        new webpack.DefinePlugin({
-          'process.env': {NODE_ENV: JSON.stringify('production')}
         })
       )
     }
+
+    config.plugins.push(
+      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.OccurenceOrderPlugin(true),
+      new ExtractTextPlugin(config.output.cssFilename, {
+        allChunks: true
+      }),
+      new webpack.DefinePlugin({
+        'process.env': {NODE_ENV: JSON.stringify('production')}
+      })
+    )
 
     // Add optional loaders
     installedStyleLoaders.forEach(function (item) {
